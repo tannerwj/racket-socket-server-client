@@ -1,2 +1,6 @@
 # racket-socket-server-client
 A server and client using TCP connections over sockets, built in Racket.
+
+The server uses only one extra library called racket/tcp. It is a loop in which the first line is a blocking statement that accepts incoming connections off of the listener. Once a new connection arrives, it creates a new thread so that it can service multiple clients at once. Inside the thread are the different functions as well as the various thread-specific variables such as name and buffer. Inside each thread there is another loop that runs after a blocking read statement that returns a line after a return-linefeed is received that will parse the received line and perform the action required. Once the ‘adios’ string is received, the loop is exited and the connection is closed.
+
+The client is much simpler than the server. It connects to the server using tcp-connect and then creates a thread for reading data sent from the server. This thread essentially just waits for a return-linefeed and then displays whatever it has received to the console. After that thread has been created, the client enters a read from keyboard loop that blocks on a read statement and then sends the received string to the server. If that string is ‘adios’ it will also kill the thread and close the connection to the server.
